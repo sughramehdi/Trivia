@@ -82,14 +82,14 @@ def create_app(test_config=None):
       })
 
     except:
-      abort(422)
+      abort(400)
 
 
   # Endpoint to DELETE question using a question ID.
   @app.route('/questions/<int:question_id>', methods=['DELETE'])
   def delete_question(question_id):
     try:
-      question = Question.query.filter(Question.id == question_id).one_or_none()
+      question = Question.query.filter(Question.id == question_id).first()
       
       if question is None:
         abort(404)
@@ -158,45 +158,38 @@ def create_app(test_config=None):
       # but will not navigate there directly.
 
       return jsonify({
+        "success": True,
         "questions": current_questions,
         "total_questions": len(selection),
         "current_category": None
       })
 
     except:
-      abort(422)
+      abort(404)
 
 
-  '''
-  @TODO: 
-  Create a GET endpoint to get questions based on category. 
-
-  TEST: In the "List" tab / main screen, clicking on one of the 
-  categories in the left column will cause only questions of that 
-  category to be shown. 
-  '''
+  # GET endpoint to get questions based on category. 
   @app.route('/categories/<int:category_id>/questions')
   def get_questions_per_category(category_id):
     try:
       selection = Question.query.filter(Question.category == category_id).order_by(Question.id).all()
       current_questions = paginate_questions(request, selection)
-      
-      if len(current_questions) == 0:
-        abort(404)
-      
+        
       # CURRENT ISSUE 1: If I am on page 1, and search results are 14, first 10 will be shown on page 1
       # and clicking on page 2 will show result of GET /questions?page=2     
-  
+      
       # CURRENT ISSUE 2: if I am on page 2, and there is only 1 result, then it will show link to page 1
       # but will not navigate there directly.
+      
       return jsonify({
+        'success' : True,
         'questions' : current_questions,
         'total_questions' : len(current_questions),
         'current_category' : (Category.query.filter(Category.id==category_id).first()).type
       })
 
     except:
-      abort(422)
+     abort(422)
 
   
   # POST endpoint to play the quiz.
@@ -232,7 +225,7 @@ def create_app(test_config=None):
           }
         })
     except:
-      abort(422)
+      abort(400)
 
 
   # Error handlers for Errors in this code
@@ -251,6 +244,14 @@ def create_app(test_config=None):
       "error": 422,
       "message": "unprocessable"
     }), 422
+
+  @app.errorhandler(400)
+  def unprocessable(error):
+    return jsonify({
+      "success": False, 
+      "error": 400,
+      "message": "bad request"
+    }), 400  
   
   return app
 
