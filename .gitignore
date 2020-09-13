@@ -2,6 +2,7 @@
 __pycache__
 venv
 backend/flaskr/__init__vanilla
+backend/initialtest_flaskr
 frontend/node_modules
 
 

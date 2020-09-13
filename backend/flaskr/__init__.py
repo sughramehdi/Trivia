@@ -55,8 +55,8 @@ def create_app(test_config=None):
 
       return jsonify({
         'success': True,
-        'categories': categories,  # this returns categories as a list
-        'categoriesasdict': get_category_list()  # this returns categories as a dictionary
+        'categories': categories,  # this returns a list with each category as a seaparate dictionary object
+        'categoriesasdict': get_category_list()  # this returns categories as one dictionary
       })
     except:
       abort(422)
@@ -217,7 +217,7 @@ def create_app(test_config=None):
         return jsonify({
           'success' : True,
           'question' : {
-            'id': 1000,
+            'id': 10000000,
             'question': 'No more Questions :)',
             'answer': 'No more Answers',
             'category': 1,
