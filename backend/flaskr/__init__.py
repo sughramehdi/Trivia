@@ -20,6 +20,7 @@ def paginate_questions(request, selection):
 
     return current_questions
 
+
 # creates a dictionary of categories with id as the key and type as the value
 def get_category_list():
     categories = {}
@@ -42,7 +43,7 @@ def create_app(test_config=None):
     response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization,true')
     response.headers.add('Access-Control-Allow-Methods', 'GET,POST,DELETE,OPTIONS')
     return response
-  
+
   # endpoint to handle GET requests for all available categories.
   @app.route('/categories')
   def retrieve_categories():
@@ -55,12 +56,13 @@ def create_app(test_config=None):
 
       return jsonify({
         'success': True,
-        'categories': categories,  # this returns a list with each category as a seaparate dictionary object
-        'categoriesasdict': get_category_list()  # this returns categories as one dictionary
+        'categories': categories,
+        # returns a list with each category as a seaparate dictionary object
+        'categoriesasdict': get_category_list()
+        # this returns categories as one dictionary
       })
     except Exception:
       abort(422)
-
 
   # Endpoint to handle GET requests for questions, including pagination
   @app.route('/questions')
@@ -84,13 +86,12 @@ def create_app(test_config=None):
     except Exception:
       abort(400)
 
-
   # Endpoint to DELETE question using a question ID.
   @app.route('/questions/<int:question_id>', methods=['DELETE'])
   def delete_question(question_id):
     try:
       question = Question.query.filter(Question.id == question_id).first()
-      
+
       if question is None:
         abort(404)
 
@@ -110,7 +111,8 @@ def create_app(test_config=None):
     except Exception:
       abort(422)
 
-  # Endpoint to create an endpoint to POST a new question, with the question and answer text, category, and difficulty score.
+  # Endpoint to create an endpoint to POST a new question, with the question
+  # and answer text, category, and difficulty score.
   @app.route('/questions', methods=['POST'])
   def create_question():
     body = request.get_json()
@@ -139,7 +141,6 @@ def create_app(test_config=None):
     except Exception:
       abort(422)
 
-
   # Endpoint to search questions based on a search term
   @app.route('/questions/search', methods=['POST'])
   def search_questions():
@@ -152,8 +153,7 @@ def create_app(test_config=None):
       current_questions = [question.format() for question in selection]
 
       # CURRENT ISSUE 1: If I am on page 1, and search results are 14, all 14 will be shown on page 1
-      # and clicking on page 2 will show result of GET /questions?page=2     
-  
+      # and clicking on page 2 will show result of GET /questions?page=2
       # CURRENT ISSUE 2: if I am on page 2, and there is only 1 result, then it will show link to page 1
       # but will not navigate there directly.
 
@@ -168,30 +168,29 @@ def create_app(test_config=None):
       abort(404)
 
 
-  # GET endpoint to get questions based on category. 
+  # GET endpoint to get questions based on category.
   @app.route('/categories/<int:category_id>/questions')
   def get_questions_per_category(category_id):
     try:
       selection = Question.query.filter(Question.category == category_id).order_by(Question.id).all()
       current_questions = paginate_questions(request, selection)
-        
-      # CURRENT ISSUE 1: If I am on page 1, and search results are 14, first 10 will be shown on page 1
-      # and clicking on page 2 will show result of GET /questions?page=2     
-      
-      # CURRENT ISSUE 2: if I am on page 2, and there is only 1 result, then it will show link to page 1
-      # but will not navigate there directly.
-      
+
+      # CURRENT ISSUE 1: If I am on page 1, and search results are 14,
+      # first 10 will be shown on page 1
+      # and clicking on page 2 will show result of GET /questions?page=2
+      # CURRENT ISSUE 2: if I am on page 2, and there is only 1 result,
+      # it will show link to page 1 but will not navigate there directly.
+
       return jsonify({
-        'success' : True,
-        'questions' : current_questions,
-        'total_questions' : len(current_questions),
-        'current_category' : (Category.query.filter(Category.id==category_id).first()).type
+        'success': True,
+        'questions': current_questions,
+        'total_questions': len(current_questions),
+        'current_category': (Category.query.filter(Category.id == category_id).first()).type
       })
 
     except Exception:
      abort(422)
 
-  
   # POST endpoint to play the quiz.
   @app.route('/quizzes', methods=['POST'])
   def quiz_questions():
@@ -200,11 +199,14 @@ def create_app(test_config=None):
       current_category = body.get('quiz_category')
       previous_questions = body.get('previous_questions', None)
 
-      # if 'ALL' is selected in the category selection criteria  
+      # if 'ALL' is selected in the category selection criteria
       if current_category['id'] == 0:
-        questions = Question.query.filter(Question.id.notin_((previous_questions))).all()
-      else: # for a particular category
-        questions = Question.query.filter(Question.category==current_category['id']).filter(Question.id.notin_((previous_questions))).all() 
+        questions = Question.query.\
+          filter(Question.id.notin_((previous_questions))).all()
+      else:  # for a particular category
+        questions = Question.query.\
+          filter(Question.category == current_category['id']).\
+          filter(Question.id.notin_((previous_questions))).all()
       
       if questions:
         current_question = random.choice(questions)
