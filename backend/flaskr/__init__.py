@@ -58,7 +58,7 @@ def create_app(test_config=None):
         'categories': categories,  # this returns a list with each category as a seaparate dictionary object
         'categoriesasdict': get_category_list()  # this returns categories as one dictionary
       })
-    except:
+    except Exception:
       abort(422)
 
 
@@ -81,7 +81,7 @@ def create_app(test_config=None):
         'current_category': None
       })
 
-    except:
+    except Exception:
       abort(400)
 
 
@@ -107,7 +107,7 @@ def create_app(test_config=None):
         'current_category': None
       })
 
-    except:
+    except Exception:
       abort(422)
 
   # Endpoint to create an endpoint to POST a new question, with the question and answer text, category, and difficulty score.
@@ -136,7 +136,7 @@ def create_app(test_config=None):
         'current_category': None
       })
 
-    except:
+    except Exception:
       abort(422)
 
 
@@ -164,7 +164,7 @@ def create_app(test_config=None):
         "current_category": None
       })
 
-    except:
+    except Exception:
       abort(404)
 
 
@@ -188,7 +188,7 @@ def create_app(test_config=None):
         'current_category' : (Category.query.filter(Category.id==category_id).first()).type
       })
 
-    except:
+    except Exception:
      abort(422)
 
   
@@ -224,7 +224,7 @@ def create_app(test_config=None):
             'difficulty': 1
           }
         })
-    except:
+    except Exception:
       abort(400)
 
 
