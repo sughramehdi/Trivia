@@ -189,7 +189,7 @@ def create_app(test_config=None):
       })
 
     except Exception:
-     abort(422)
+      abort(422)
 
   # POST endpoint to play the quiz.
   @app.route('/quizzes', methods=['POST'])
