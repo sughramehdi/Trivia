@@ -167,7 +167,6 @@ def create_app(test_config=None):
     except Exception:
       abort(404)
 
-
   # GET endpoint to get questions based on category.
   @app.route('/categories/<int:category_id>/questions')
   def get_questions_per_category(category_id):
@@ -207,18 +206,18 @@ def create_app(test_config=None):
         questions = Question.query.\
           filter(Question.category == current_category['id']).\
           filter(Question.id.notin_((previous_questions))).all()
-      
+
       if questions:
         current_question = random.choice(questions)
         return jsonify({
-          'success' : True,
-          'question' : current_question.format()
+          'success': True,
+          'question': current_question.format()
         })
       else:
         # once questions finish, this message will be shown
         return jsonify({
-          'success' : True,
-          'question' : {
+          'success': True,
+          'question': {
             'id': 10000000,
             'question': 'No more Questions :)',
             'answer': 'No more Answers',
@@ -229,12 +228,11 @@ def create_app(test_config=None):
     except Exception:
       abort(400)
 
-
   # Error handlers for Errors in this code
   @app.errorhandler(404)
   def not_found(error):
     return jsonify({
-      "success": False, 
+      "success": False,
       "error": 404,
       "message": "resource not found"
     }), 404
@@ -242,7 +240,7 @@ def create_app(test_config=None):
   @app.errorhandler(422)
   def unprocessable(error):
     return jsonify({
-      "success": False, 
+      "success": False,
       "error": 422,
       "message": "unprocessable"
     }), 422
@@ -250,19 +248,17 @@ def create_app(test_config=None):
   @app.errorhandler(400)
   def unprocessable(error):
     return jsonify({
-      "success": False, 
+      "success": False,
       "error": 400,
       "message": "bad request"
-    }), 400  
+    }), 400
 
   @app.errorhandler(500)
   def unprocessable(error):
     return jsonify({
-      "success": False, 
+      "success": False,
       "error": 500,
       "message": "Internal Server Error"
-    }), 500  
-  
-  return app
+    }), 500
 
-    
+  return app
